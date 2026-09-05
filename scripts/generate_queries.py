@@ -15,8 +15,10 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from PIL import Image
 
-# The dataset stays in the experiment repository; the foundry reads it in place.
-MAIN_REPO_DATA_ROOT = Path("/home/fang0/dev/projects/aicomp-multimodal-grounding/data")
+# Annotation source indexes live in this repository; images stay in the
+# experiment repo and are reached through the data/Train, data/Processed
+# symlinks. Override with --data-root if the layout ever moves.
+MAIN_REPO_DATA_ROOT = PROJECT_ROOT / "data"
 
 from foundry.annotation_state import (
     annotation_attempt_numbers,

@@ -3,3 +3,5 @@ __pycache__/
 .ipynb_checkpoints/
 keys/api_keys.txt
 outputs/
+data/Train
+data/Processed

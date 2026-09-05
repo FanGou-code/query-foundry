@@ -45,9 +45,11 @@ docs/     handoff.md（状态与日志）
 
 ## 生成管线用法
 
-数据集留在实验主仓原路径，本仓默认读取
-`/home/fang0/dev/projects/aicomp-multimodal-grounding/data`（`--data-root` 可覆盖）。
-产物落在本仓 `outputs/annotations/`，由管理员手动复制进主仓同路径。
+**标注源索引在本仓**：`data/indexes/`（train/val.json + split_manifest.json，git 追踪）
+与 `data/audits/`（SHA-256 剔除审计）。图像不搬运——`data/Train`、`data/Processed`
+是指向主仓 `data/` 的符号链接，管线经 `--data-root`（默认本仓 `data/`）取图。
+指纹校验按内容哈希进行，文件迁移不影响 golden 身世链。产物落在本仓
+`outputs/annotations/`，由管理员手动复制进主仓同路径。
 
 ```bash
 # key 池：一把钥匙一行，按行序固定调用顺序，耗尽自动换下一把
