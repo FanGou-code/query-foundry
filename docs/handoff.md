@@ -18,6 +18,14 @@
 
 ## 交接日志
 
+### 2026-09-05 主仓 sequence/config 生成侧残留并入本仓
+
+- 动因：主仓分离收尾——`sequence.py` 教师响应解析三件套与 `config.py`
+  12 个生成侧常量在主仓已零消费者（本仓副本为唯一实体）。
+- 改动：新增 `tests/test_sequence_parsing.py`（3 个 parse 测试方法自主仓
+  test_artifacts_sharding_sequence.py 迁入）。
+- 验证：本仓 49 项 OK；主仓 171 项 OK，golden 复验通过。
+
 ### 2026-09-05 style_spec 冻结（口径对齐 + 三项裁决落档）
 
 - 动因：管理员审阅 Phase 0 草案后三项裁决——①阈值下错误一概不学（邻接重复
