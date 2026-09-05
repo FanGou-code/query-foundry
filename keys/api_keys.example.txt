@@ -1,2 +1,0 @@
-# One API key per line, in fixed call order.
-# Lines starting with '#' are comments. This file is gitignored — never commit it.

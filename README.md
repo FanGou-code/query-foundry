@@ -38,7 +38,7 @@ foundry/  生产线包：管线状态机、API 客户端（含 key 池）、QC�
           复制的共享工具（io/artifacts/bbox/images/sequence/query/sharding/config）
 scripts/  generate_queries.py（生成入口）/ audit_query_style.py（样式审计）
 spec/     style_spec.json（test 句式规范）与后续语法版本
-keys/     api_keys.txt（gitignored，key 池文档）+ api_keys.example.txt
+keys/     api_keys.txt（gitignored，key 池文档，一行一把，行序=调用序）
 tests/    离线单测
 docs/     handoff.md（状态与日志）
 ```
@@ -53,7 +53,7 @@ docs/     handoff.md（状态与日志）
 
 ```bash
 # key 池：一把钥匙一行，按行序固定调用顺序，耗尽自动换下一把
-cp keys/api_keys.example.txt keys/api_keys.txt   # 然后填入真实 key
+nano keys/api_keys.txt   # 一行一个 key；该文件被 gitignore，永不入库
 
 # 预检（不花调用）：校验索引指纹、图引用，产出 plan.json
 python scripts/generate_queries.py --split train --limit-sequences 20 \
