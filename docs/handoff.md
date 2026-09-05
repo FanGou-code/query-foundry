@@ -13,10 +13,26 @@
   `keys/api_keys.txt`，固定顺序、耗尽即退、全池耗尽快速失败）。
 - 数据集仍在主仓原路径，`--data-root` 默认指向主仓 `data/`；产物落本仓
   `outputs/annotations/`，由管理员手动复制回主仓。
-- Phase 0 草案 `spec/style_spec.json` 仍待管理员审阅冻结；Phase 1 普查协议未开始。
+- Phase 0 完成：`spec/style_spec.json` 已冻结（frozen-2026-09-05，口径与 gt-analysis 逐桶对齐）。Phase 1 普查协议未开始。
 - v5 新普查/组装/规划 pass 未实现（属 Phase 1+，待管理员通知开工）。
 
 ## 交接日志
+
+### 2026-09-05 style_spec 冻结（口径对齐 + 三项裁决落档）
+
+- 动因：管理员审阅 Phase 0 草案后三项裁决——①阈值下错误一概不学（邻接重复
+  14 次不特批）；②中文夹杂不主动制造也不刻意回避，交由底座能力处理；
+  ③桶分类口径与 gt-analysis 已发布计数对齐。
+- 改动：`scripts/phase0_mine_test_style.py` 四桶分类器对齐
+  （序数 > 距离 > 空间 > 属性动作；空间词表不含 foreground/background/
+  opposite/rows，即 139 条差额来源）；`spec/style_spec.json` 状态翻为
+  `frozen-2026-09-05`，`freeze_decisions` 记录三项裁决。
+- 验证：重跑后四桶 3201/2465/2450/1439 与 gt-analysis 已发布计数逐桶
+  精确一致；其余基线（重复率 7.6%、词数 10.33、词表 2615）不变。
+- 备注：对齐仅取分类正则口径（管理员指示），gt-analysis 的 GT 数据与
+  成绩结论未进本仓，防污染边界不破。
+- 下一步：Phase 1 普查协议（findall/attr/review 三类 pass）+ 20 序列试点，
+  待管理员开工指令。
 
 ### 2026-09-05 标注管线自主仓分离 + key 池
 

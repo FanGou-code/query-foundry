@@ -34,10 +34,12 @@ DIR = {"left", "right", "front", "back", "rear", "top", "bottom", "middle",
 FAR = {"far"}
 ROW = {"row", "rows", "line", "lines", "column", "columns", "queue"}
 
-RE_ORD = re.compile(r"\b(first|second|third|fourth|fifth|sixth|seventh|eighth|last)\b", re.I)
-RE_SUP = re.compile(r"\b(leftmost|rightmost|topmost|bottommost|nearest|closest|farthest|uppermost|lowermost|frontmost)\b", re.I)
-RE_DIST = re.compile(r"\b(near|nearer|nearby|far|farther|farthest|close|closer|distance|away)\b", re.I)
-RE_SPAT = re.compile(r"\b(left|right|front|back|rear|top|bottom|middle|center|centre|side|row|rows|behind|beside|between|above|below|under|foreground|background|edge|corner)\b", re.I)
+# bucket classifier — aligned with the gt-analysis published four-bucket counts
+# (ordinal 3201 / spatial 2465 / attribute_action 2450 / distance 1439),
+# per admin instruction (2026-09-05). Priority: ordinal > distance > spatial.
+RE_ORD = re.compile(r"\b(first|second|third|fourth|fifth|sixth|seventh|eighth|last|leftmost|rightmost|topmost|bottommost|nearest|closest|farthest)\b", re.I)
+RE_DIST = re.compile(r"\b(far|near|close|distance|away|front|behind)\b", re.I)
+RE_SPAT = re.compile(r"\b(left|right|top|bottom|middle|center|centre|corner|beside|below|above|under|between|row|edge|side)\b", re.I)
 
 
 def tokenize(text):
@@ -163,7 +165,7 @@ def main():
     # ---- draft style buckets (text-layer heuristic, priority: ordinal > distance > spatial > attr/action) ----
     buckets = Counter()
     for t in texts:
-        if RE_ORD.search(t) or RE_SUP.search(t):
+        if RE_ORD.search(t):
             buckets["ordinal"] += 1
         elif RE_DIST.search(t):
             buckets["distance"] += 1
@@ -187,8 +189,13 @@ def main():
                     for k, p in probes.items()}
 
     spec = {
-        "status": "draft-awaiting-admin-review",
-        "version": "phase0-draft",
+        "status": "frozen-2026-09-05",
+        "version": "phase0-frozen",
+        "freeze_decisions": {
+            "quirk_threshold": "MT 怪癖只学高频（test 出现 >=20 次）；阈值下错误一概不学",
+            "chinese_chars": "不主动制造也不刻意回避中文夹杂，交由底座能力处理（管理员 2026-09-05）",
+            "bucket_alignment": "四桶口径与 gt-analysis 已发布计数逐桶对齐（3201/2465/2450/1439）",
+        },
         "source": {
             "file": "aicomp-multimodal-grounding/data/Test/queries/queries.json",
             "sha256": sha,
@@ -213,7 +220,7 @@ def main():
             "vocab_size_freq_ge5": len(vocab_ge5),
         },
         "style_buckets_draft": {
-            "rule": "priority ordinal > distance > spatial > attribute_action; regex-defined in script",
+            "rule": "aligned with gt-analysis published counts; priority ordinal > distance > spatial > attribute_action",
             "shares": {k: f"{v} ({v / n * 1000:.0f} per-mille)" for k, v in buckets.most_common()},
         },
         "skeletons_top60": [
@@ -234,7 +241,7 @@ def main():
         "domain_phrases": phrase_counts,
         "lexical_probes": probe_counts,
         "quirks_threshold20": quirks,
-        "quirk_threshold_note": "MT 怪癖只学高频：候选列表按机械检测全量给出，≥20 次才进语法；本表含全部命中，管理员审阅定取舍",
+        "quirk_threshold_note": "怪癖清单仅作方言记录，语法不学习任何错误模式（管理员 2026-09-05）；中文夹杂不特殊处理",
     }
 
     OUT_SPEC.parent.mkdir(parents=True, exist_ok=True)

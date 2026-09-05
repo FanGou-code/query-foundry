@@ -1,6 +1,11 @@
 {
-  "status": "draft-awaiting-admin-review",
-  "version": "phase0-draft",
+  "status": "frozen-2026-09-05",
+  "version": "phase0-frozen",
+  "freeze_decisions": {
+    "quirk_threshold": "MT 怪癖只学高频（test 出现 >=20 次）；阈值下错误一概不学",
+    "chinese_chars": "不主动制造也不刻意回避中文夹杂，交由底座能力处理（管理员 2026-09-05）",
+    "bucket_alignment": "四桶口径与 gt-analysis 已发布计数逐桶对齐（3201/2465/2450/1439）"
+  },
   "source": {
     "file": "aicomp-multimodal-grounding/data/Test/queries/queries.json",
     "sha256": "2a08cd3a930d9749edb86a8b420d8259dce446116ad98d93338edf8b3e1ef67c",
@@ -27,12 +32,12 @@
     "vocab_size_freq_ge5": 1034
   },
   "style_buckets_draft": {
-    "rule": "priority ordinal > distance > spatial > attribute_action; regex-defined in script",
+    "rule": "aligned with gt-analysis published counts; priority ordinal > distance > spatial > attribute_action",
     "shares": {
-      "ordinal": "3207 (336 per-mille)",
-      "spatial": "3144 (329 per-mille)",
-      "attribute_action": "2224 (233 per-mille)",
-      "distance": "980 (103 per-mille)"
+      "ordinal": "3201 (335 per-mille)",
+      "spatial": "2465 (258 per-mille)",
+      "attribute_action": "2450 (256 per-mille)",
+      "distance": "1439 (151 per-mille)"
     }
   },
   "skeletons_top60": [
@@ -785,5 +790,5 @@
       ]
     }
   ],
-  "quirk_threshold_note": "MT 怪癖只学高频：候选列表按机械检测全量给出，≥20 次才进语法；本表含全部命中，管理员审阅定取舍"
+  "quirk_threshold_note": "怪癖清单仅作方言记录，语法不学习任何错误模式（管理员 2026-09-05）；中文夹杂不特殊处理"
 }
