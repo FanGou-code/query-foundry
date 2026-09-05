@@ -18,6 +18,16 @@
 
 ## 交接日志
 
+### 2026-09-05（管理员新红线：API 调用须逐次明确指令）
+
+- 规则：任何真实产生 API 调用的命令，未经管理员当次明确指令禁止执行；
+  零调用的 preflight-only 不受限制。已写入 README 用法段。
+- 现状：key 池就绪（api_keys.txt 11 把，0600，gitignored；模板文件已删除——
+  曾诱导管理员把真实 key 填入被 git 追踪的模板，已纠正并清扫 stash/git 对象）。
+  冒烟命令就绪待管理员放行：`python scripts/generate_queries.py --split train
+  --limit-sequences 2 --concurrency 2 --run-tag smoke-sep`（预检已过，
+  run_id=annot_d2a2d09fcdc36654，18 帧）。
+
 ### 2026-09-05 主仓 sequence/config 生成侧残留并入本仓
 
 - 动因：主仓分离收尾——`sequence.py` 教师响应解析三件套与 `config.py`

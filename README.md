@@ -64,6 +64,9 @@ python scripts/generate_queries.py --split train --limit-sequences 20 \
   --run-tag pilot
 
 # 全量 + 发布 approved.json；中断后重跑同一指令自动从分片 checkpoint 续跑
+#
+# 红线：凡真实产生 API 调用的命令（生成/审查/普查），必须持有管理员的明确
+# 指令才可执行；preflight-only（零调用）不受此限。
 python scripts/generate_queries.py --split train --publish --run-tag v5-train
 
 # 样式审计
