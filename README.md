@@ -34,7 +34,42 @@
 ## 结构
 
 ```
-scripts/  挖掘与生产线脚本
+foundry/  生产线包：管线状态机、API 客户端（含 key 池）、QC、提示词合同、
+          复制的共享工具（io/artifacts/bbox/images/sequence/query/sharding/config）
+scripts/  generate_queries.py（生成入口）/ audit_query_style.py（样式审计）
 spec/     style_spec.json（test 句式规范）与后续语法版本
+keys/     api_keys.txt（gitignored，key 池文档）+ api_keys.example.txt
+tests/    离线单测
 docs/     handoff.md（状态与日志）
 ```
+
+## 生成管线用法
+
+数据集留在实验主仓原路径，本仓默认读取
+`/home/fang0/dev/projects/aicomp-multimodal-grounding/data`（`--data-root` 可覆盖）。
+产物落在本仓 `outputs/annotations/`，由管理员手动复制进主仓同路径。
+
+```bash
+# key 池：一把钥匙一行，按行序固定调用顺序，耗尽自动换下一把
+cp keys/api_keys.example.txt keys/api_keys.txt   # 然后填入真实 key
+
+# 预检（不花调用）：校验索引指纹、图引用，产出 plan.json
+python scripts/generate_queries.py --split train --limit-sequences 20 \
+  --run-tag pilot --preflight-only
+
+# 试点（写 preview 图，人工审）
+python scripts/generate_queries.py --split train --limit-sequences 20 \
+  --run-tag pilot
+
+# 全量 + 发布 approved.json；中断后重跑同一指令自动从分片 checkpoint 续跑
+python scripts/generate_queries.py --split train --publish --run-tag v5-train
+
+# 样式审计
+python scripts/audit_query_style.py --queries outputs/annotations/annot_<run_id>/train/approved.json --full
+```
+
+key 池行为：固定顺序、耗尽即退（401/402/403 立即换号，429 同号重试一次后换号，
+5xx/网络错误按既有退避在同一把上重试）；全池耗尽快速失败退出并在终端明示，
+checkpoint 已落盘，补 key 后重跑同一指令即续。终端只显示 key 编号，永不显示明文。
+也可用环境变量 `ANNOTATION_API_KEY_FILE`（指定文件）或 `ANNOTATION_API_KEYS`
+（逗号分隔）替代仓库 key 文件。
